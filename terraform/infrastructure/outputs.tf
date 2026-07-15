@@ -17,3 +17,12 @@ output "target_group_arn" {
 output "autoscaling_group_name" {
   value = aws_autoscaling_group.app_asg.name
 }
+output "ecr_repository_url" {
+  description = "Amazon ECR Repository URL"
+  value       = aws_ecr_repository.app_repository.repository_url
+}
+
+output "ecr_repository_name" {
+  description = "Amazon ECR Repository Name"
+  value       = aws_ecr_repository.app_repository.name
+}
