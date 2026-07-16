@@ -31,15 +31,24 @@ resource "aws_security_group" "alb_sg" {
     Environment = var.environment
   }
 }
-resource "aws_security_group" "bastion_sg" {
-  name        = "${var.project_name}-bastion-sg"
-  description = "Security Group for Bastion Host"
+
+resource "aws_security_group" "jenkins_sg" {
+  name        = "${var.project_name}-jenkins-sg"
+  description = "Security Group for Jenkins Server"
   vpc_id      = aws_vpc.main.id
 
   ingress {
     description = "SSH"
     from_port   = 22
     to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "Jenkins UI"
+    from_port   = 8080
+    to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -52,10 +61,11 @@ resource "aws_security_group" "bastion_sg" {
   }
 
   tags = {
-    Name        = "${var.project_name}-bastion-sg"
+    Name        = "${var.project_name}-jenkins-sg"
     Environment = var.environment
   }
 }
+
 resource "aws_security_group" "app_sg" {
   name        = "${var.project_name}-app-sg"
   description = "Application Security Group"
@@ -70,11 +80,11 @@ resource "aws_security_group" "app_sg" {
   }
 
   ingress {
-    description     = "SSH from Bastion"
+    description     = "SSH from jenkins"
     from_port       = 22
     to_port         = 22
     protocol        = "tcp"
-    security_groups = [aws_security_group.bastion_sg.id]
+    security_groups = [aws_security_group.jenkins_sg.id]
   }
 
   egress {

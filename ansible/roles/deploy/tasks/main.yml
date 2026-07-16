@@ -1,0 +1,46 @@
+---
+- name: Verify Docker service
+  become: true
+  service:
+    name: "{{ docker_service }}"
+    state: started
+
+- name: Login to Amazon ECR
+  become: true
+  shell: >
+    aws ecr get-login-password --region {{ aws_region }} |
+    docker login --username AWS --password-stdin {{ ecr_registry }}
+  changed_when: false
+
+- name: Pull latest Docker image
+  become: true
+  docker_image:
+    name: "{{ ecr_registry }}/{{ ecr_repository }}"
+    tag: "{{ image_tag }}"
+    source: pull
+
+- name: Remove existing container if present
+  become: true
+  docker_container:
+    name: "{{ container_name }}"
+    state: absent
+
+- name: Run application container
+  become: true
+  docker_container:
+    name: "{{ container_name }}"
+    image: "{{ ecr_registry }}/{{ ecr_repository }}:{{ image_tag }}"
+    state: started
+    restart_policy: always
+    published_ports:
+      - "{{ app_port }}:{{ app_port }}"
+
+- name: Verify running container
+  become: true
+  command: docker ps
+  register: docker_status
+  changed_when: false
+
+- name: Display running containers
+  debug:
+    var: docker_status.stdout_lines

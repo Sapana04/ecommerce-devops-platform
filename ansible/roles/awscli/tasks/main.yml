@@ -1,0 +1,15 @@
+---
+- name: Install AWS CLI
+  become: true
+  dnf:
+    name: "{{ awscli_package }}"
+    state: present
+
+- name: Verify AWS CLI installation
+  command: aws --version
+  register: awscli_version
+  changed_when: false
+
+- name: Display AWS CLI version
+  debug:
+    msg: "{{ awscli_version.stdout }}"

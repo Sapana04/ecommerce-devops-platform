@@ -6,8 +6,14 @@ output "alb_dns_name" {
   value = aws_lb.app_alb.dns_name
 }
 
-output "bastion_public_ip" {
-  value = aws_instance.bastion.public_ip
+output "jenkins_public_ip" {
+  description = "Jenkins Server Public IP"
+  value       = aws_instance.jenkins.public_ip
+}
+
+output "jenkins_public_dns" {
+  description = "Jenkins Server Public DNS"
+  value       = aws_instance.jenkins.public_dns
 }
 
 output "target_group_arn" {
@@ -17,6 +23,7 @@ output "target_group_arn" {
 output "autoscaling_group_name" {
   value = aws_autoscaling_group.app_asg.name
 }
+
 output "ecr_repository_url" {
   description = "Amazon ECR Repository URL"
   value       = aws_ecr_repository.app_repository.repository_url

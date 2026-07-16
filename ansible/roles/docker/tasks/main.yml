@@ -1,0 +1,37 @@
+---
+- name: Install Docker
+  become: true
+  dnf:
+    name: "{{ docker_package }}"
+    state: present
+
+- name: Enable Docker Service
+  become: true
+  service:
+    name: "{{ docker_service }}"
+    enabled: true
+
+- name: Start Docker Service
+  become: true
+  service:
+    name: "{{ docker_service }}"
+    state: started
+
+- name: Add ec2-user to docker group
+  become: true
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: true
+
+- name: Install Python3 Pip
+  become: true
+  dnf:
+    name: "{{ python_package }}"
+    state: present
+
+- name: Install Docker Python SDK
+  become: true
+  pip:
+    name: "{{ docker_sdk_package }}"
+    state: present

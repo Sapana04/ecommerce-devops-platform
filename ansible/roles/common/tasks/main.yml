@@ -1,0 +1,13 @@
+---
+- name: Update system packages
+  become: true
+  dnf:
+    name: "*"
+    state: latest
+    update_cache: true
+
+- name: Install common packages
+  become: true
+  dnf:
+    name: "{{ common_packages }}"
+    state: present

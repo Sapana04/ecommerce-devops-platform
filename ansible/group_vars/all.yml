@@ -1,0 +1,53 @@
+---
+# AWS
+aws_region: us-east-1
+
+# Project
+project_name: ecommerce-devops
+environment: dev
+
+# SSH
+ansible_user: ec2-user
+
+# Common Packages
+common_packages:
+  - git
+  - curl
+  - wget
+  - unzip
+
+# Docker
+docker_package: docker
+docker_service: docker
+
+# Application
+app_port: 3000
+
+# ECR
+ecr_repository: ecommerce-devops
+
+# AWS CLI
+awscli_package: awscli
+
+# CloudWatch
+cloudwatch_package: amazon-cloudwatch-agent
+cloudwatch_service: amazon-cloudwatch-agent
+
+# Python
+python_package: python3-pip
+
+# Docker SDK
+docker_sdk_package: docker
+
+# Docker Container
+container_name: ecommerce-app
+container_port: 3000
+image_tag: latest
+
+# ECR
+ecr_repository: ecommerce-devops
+image_tag: latest
+
+# Docker Container
+container_name: ecommerce-app
+image_tag: latest

@@ -1,0 +1,27 @@
+---
+- name: Install CloudWatch Agent
+  become: true
+  dnf:
+    name: "{{ cloudwatch_package }}"
+    state: present
+
+- name: Enable CloudWatch Agent
+  become: true
+  service:
+    name: "{{ cloudwatch_service }}"
+    enabled: true
+
+- name: Start CloudWatch Agent
+  become: true
+  service:
+    name: "{{ cloudwatch_service }}"
+    state: started
+
+- name: Check CloudWatch Agent status
+  command: systemctl status {{ cloudwatch_service }}
+  register: cloudwatch_status
+  changed_when: false
+
+- name: Display CloudWatch Agent status
+  debug:
+    var: cloudwatch_status.stdout_lines
