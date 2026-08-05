@@ -1,0 +1,95 @@
+pipeline {
+
+    agent any
+
+    environment {
+        AWS_REGION   = 'us-east-1'
+        TERRAFORM_DIR = 'terraform'
+        ANSIBLE_DIR   = 'ansible'
+    }
+
+    options {
+        timestamps()
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+
+    stages {
+
+        stage('Checkout Source Code') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                dir("${TERRAFORM_DIR}") {
+                    sh 'terraform init'
+                }
+            }
+        }
+
+        stage('Terraform Validate') {
+            steps {
+                dir("${TERRAFORM_DIR}") {
+                    sh 'terraform validate'
+                }
+            }
+        }
+
+        stage('Terraform Format Check') {
+            steps {
+                dir("${TERRAFORM_DIR}") {
+                    sh 'terraform fmt -check -recursive'
+                }
+            }
+        }
+
+        stage('Terraform Plan') {
+            steps {
+                dir("${TERRAFORM_DIR}") {
+                    sh 'terraform plan -out=tfplan'
+                }
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                dir("${TERRAFORM_DIR}") {
+                    sh 'terraform apply -auto-approve tfplan'
+                }
+            }
+        }
+
+        stage('Wait For EC2 Instances') {
+            steps {
+                echo 'Waiting for EC2 instances to become ready...'
+                sleep(time: 90, unit: 'SECONDS')
+            }
+        }
+
+        stage('Configure Servers Using Ansible') {
+            steps {
+                dir("${ANSIBLE_DIR}") {
+                    sh 'ansible-playbook playbooks/site.yml'
+                }
+            }
+        }
+    }
+
+    post {
+
+        success {
+            echo 'Infrastructure Provisioning Completed Successfully.'
+        }
+
+        failure {
+            echo 'Infrastructure Provisioning Failed.'
+        }
+
+        always {
+            cleanWs()
+        }
+    }
+}

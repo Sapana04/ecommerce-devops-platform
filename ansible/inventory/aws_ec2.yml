@@ -7,8 +7,8 @@ filters:
   instance-state-name: running
 
 keyed_groups:
-  - key: tags.Name
-    prefix: tag_Name
+  - key: tags.Role
+    prefix: tag_Role
 
 hostnames:
   - private-ip-address

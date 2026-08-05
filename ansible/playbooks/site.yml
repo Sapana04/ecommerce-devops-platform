@@ -1,0 +1,20 @@
+---
+- name: Configure Jenkins Server
+  hosts: tag_Role_jenkins
+  become: true
+
+  roles:
+    - common
+    - docker
+    - awscli
+    - jenkins
+
+- name: Configure Application Servers
+  hosts: tag_Role_app
+  become: true
+
+  roles:
+    - common
+    - docker
+    - awscli
+    - cloudwatch

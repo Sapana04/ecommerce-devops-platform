@@ -1,0 +1,6 @@
+---
+- name: Restart Jenkins
+  become: true
+  service:
+    name: jenkins
+    state: restarted

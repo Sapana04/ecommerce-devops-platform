@@ -1,0 +1,7 @@
+---
+- name: Deploy Application
+  hosts: tag_Role_app
+  become: true
+
+  roles:
+    - deploy

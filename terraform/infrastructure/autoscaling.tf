@@ -5,7 +5,7 @@ resource "aws_launch_template" "app_lt" {
   key_name      = var.key_name
 
   iam_instance_profile {
-    name = aws_iam_instance_profile.ec2_profile.name
+    name = aws_iam_instance_profile.jenkins_profile.name
   }
 
   network_interfaces {
@@ -18,10 +18,12 @@ resource "aws_launch_template" "app_lt" {
 
     tags = {
       Name        = "${var.project_name}-app"
+      Role        = "app"
       Environment = var.environment
     }
   }
-}
+} # <-- हा closing brace missing होता
+
 resource "aws_autoscaling_group" "app_asg" {
   name = "${var.project_name}-asg"
 
@@ -49,6 +51,12 @@ resource "aws_autoscaling_group" "app_asg" {
   tag {
     key                 = "Name"
     value               = "${var.project_name}-app"
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "Role"
+    value               = "app"
     propagate_at_launch = true
   }
 

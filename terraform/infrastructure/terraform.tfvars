@@ -1,7 +1,9 @@
-aws_region           = "us-east-1"
-project_name         = "ecommerce-devops"
-environment          = "dev"
-vpc_cidr             = "10.0.0.0/16"
+aws_region   = "us-east-1"
+project_name = "ecommerce-devops"
+environment  = "dev"
+
+vpc_cidr = "10.0.0.0/16"
+
 public_subnet_1_cidr = "10.0.1.0/24"
 public_subnet_2_cidr = "10.0.2.0/24"
 
@@ -10,5 +12,11 @@ private_subnet_2_cidr = "10.0.4.0/24"
 
 availability_zone_1 = "us-east-1a"
 availability_zone_2 = "us-east-1b"
-instance_type       = "t3.micro"
-key_name            = "ecommerce-project-key"
+
+instance_type         = "t3.micro"
+jenkins_instance_type = "t3.micro"
+
+key_name = "ecommerce-project-key"
+
+owner      = "DevOps"
+managed_by = "Terraform"
