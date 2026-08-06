@@ -1,4 +1,11 @@
----
+- name: Install AWS CLI dependencies
+  become: true
+  dnf:
+    name:
+      - python3-urllib3
+      - python3-requests
+    state: present
+
 - name: Install AWS CLI
   become: true
   dnf:

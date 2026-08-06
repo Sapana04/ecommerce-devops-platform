@@ -10,9 +10,9 @@
   get_url:
     url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
     dest: /etc/yum.repos.d/jenkins.repo
-    mode: '0644'
+    mode: "0644"
 
-- name: Import Jenkins GPG Key
+- name: Import Jenkins GPG key
   become: true
   rpm_key:
     key: https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
@@ -24,19 +24,13 @@
     name: jenkins
     state: present
 
-- name: Enable Jenkins Service
+- name: Enable Jenkins service
   become: true
-  service:
+  systemd:
     name: jenkins
     enabled: true
 
-- name: Start Jenkins Service
-  become: true
-  service:
-    name: jenkins
-    state: started
-
-- name: Add Jenkins user to docker group
+- name: Add Jenkins user to Docker group
   become: true
   user:
     name: jenkins
@@ -44,7 +38,8 @@
     append: true
   notify: Restart Jenkins
 
-- name: Download Terraform
-  get_url:
-    url: "{{ terraform_download_url }}"
-    dest: /tmp/terraform.zip
+- name: Start Jenkins service
+  become: true
+  systemd:
+    name: jenkins
+    state: started
