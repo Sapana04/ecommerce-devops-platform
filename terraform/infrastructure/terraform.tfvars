@@ -13,8 +13,7 @@ private_subnet_2_cidr = "10.0.4.0/24"
 availability_zone_1 = "us-east-1a"
 availability_zone_2 = "us-east-1b"
 
-instance_type         = "t3.micro"
-jenkins_instance_type = "t3.micro"
+instance_type = "t3.micro"
 
 key_name = "ecommerce-project-key"
 

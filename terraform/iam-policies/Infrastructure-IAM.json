@@ -69,6 +69,14 @@
         "iam:PassRole"
       ],
       "Resource": "arn:aws:iam::632638637512:role/ecommerce-devops-*"
+    },
+    {
+      "Sid": "SSMParameterRead",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:GetParameter"
+      ],
+      "Resource": "arn:aws:ssm:us-east-1::parameter/aws/service/ami-amazon-linux-latest/*"
     }
   ]
 }

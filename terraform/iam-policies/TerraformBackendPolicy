@@ -6,6 +6,7 @@
 			"Effect": "Allow",
 			"Action": [
 				"s3:CreateBucket",
+			    "s3:GetBucketLocation",
 				"s3:DeleteBucket",
 				"s3:ListBucket",
 				"s3:GetBucketLocation",
@@ -43,6 +44,25 @@
 				"dynamodb:DeleteItem"
 			],
 			"Resource": "arn:aws:dynamodb:us-east-1:632638637512:table/terraform-lock"
-		}
-	]
+		},
+		{
+  "Sid": "AnsibleSSMBucket",
+  "Effect": "Allow",
+  "Action": [
+    "s3:GetBucketLocation",
+    "s3:ListBucket"
+  ],
+  "Resource": "arn:aws:s3:::ecommerce-devops-ansible-ssm-632638637512"
+},
+{
+  "Sid": "AnsibleSSMBucketObjects",
+  "Effect": "Allow",
+  "Action": [
+    "s3:GetObject",
+    "s3:PutObject",
+    "s3:DeleteObject"
+  ],
+  "Resource": "arn:aws:s3:::ecommerce-devops-ansible-ssm-632638637512/*"
+}
+]
 }

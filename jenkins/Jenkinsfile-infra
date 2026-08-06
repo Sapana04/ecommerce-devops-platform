@@ -1,11 +1,11 @@
 pipeline {
-
     agent any
 
     environment {
-        AWS_REGION   = 'us-east-1'
-        TERRAFORM_DIR = 'terraform'
-        ANSIBLE_DIR   = 'ansible'
+        AWS_REGION = 'us-east-1'
+        BOOTSTRAP_DIR = 'terraform/bootstrap'
+        INFRA_DIR = 'terraform/infrastructure'
+        ANSIBLE_DIR = 'ansible'
     }
 
     options {
@@ -22,41 +22,81 @@ pipeline {
             }
         }
 
-        stage('Terraform Init') {
+        stage('Check Terraform') {
             steps {
-                dir("${TERRAFORM_DIR}") {
-                    sh 'terraform init'
+                sh 'terraform version'
+            }
+        }
+
+        stage('Bootstrap - Terraform Init') {
+            steps {
+                dir("${BOOTSTRAP_DIR}") {
+                    sh 'terraform init -upgrade'
                 }
             }
         }
 
-        stage('Terraform Validate') {
+        stage('Bootstrap - Terraform Validate') {
             steps {
-                dir("${TERRAFORM_DIR}") {
+                dir("${BOOTSTRAP_DIR}") {
                     sh 'terraform validate'
                 }
             }
         }
 
-        stage('Terraform Format Check') {
+        stage('Bootstrap - Terraform Plan') {
             steps {
-                dir("${TERRAFORM_DIR}") {
+                dir("${BOOTSTRAP_DIR}") {
+                    sh 'terraform plan -out=bootstrap.tfplan'
+                }
+            }
+        }
+
+        stage('Bootstrap - Terraform Apply') {
+            steps {
+                dir("${BOOTSTRAP_DIR}") {
+                    sh 'terraform apply -auto-approve bootstrap.tfplan'
+                }
+            }
+        }
+
+        stage('Infrastructure - Terraform Init') {
+            steps {
+                dir("${INFRA_DIR}") {
+                    sh 'terraform init -reconfigure -upgrade'
+                }
+            }
+        }
+
+        stage('Infrastructure - Terraform Validate') {
+            steps {
+                dir("${INFRA_DIR}") {
+                    sh 'terraform validate'
+                }
+            }
+        }
+
+        stage('Infrastructure - Terraform Format Check') {
+            steps {
+                dir("${INFRA_DIR}") {
                     sh 'terraform fmt -check -recursive'
                 }
             }
         }
 
-        stage('Terraform Plan') {
+        stage('Infrastructure - Terraform Plan') {
             steps {
-                dir("${TERRAFORM_DIR}") {
+                dir("${INFRA_DIR}") {
                     sh 'terraform plan -out=tfplan'
                 }
             }
         }
 
-        stage('Terraform Apply') {
+        stage('Infrastructure - Terraform Apply') {
             steps {
-                dir("${TERRAFORM_DIR}") {
+                input message: 'Terraform plan successful. Apply infrastructure?'
+
+                dir("${INFRA_DIR}") {
                     sh 'terraform apply -auto-approve tfplan'
                 }
             }
@@ -81,11 +121,11 @@ pipeline {
     post {
 
         success {
-            echo 'Infrastructure Provisioning Completed Successfully.'
+            echo 'Infrastructure provisioning completed successfully.'
         }
 
         failure {
-            echo 'Infrastructure Provisioning Failed.'
+            echo 'Infrastructure provisioning failed.'
         }
 
         always {

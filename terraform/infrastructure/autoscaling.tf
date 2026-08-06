@@ -1,3 +1,7 @@
+# ============================================================
+# Application Launch Template
+# ============================================================
+
 resource "aws_launch_template" "app_lt" {
   name_prefix   = "${var.project_name}-lt-"
   image_id      = data.aws_ami.amazon_linux.id
@@ -5,12 +9,14 @@ resource "aws_launch_template" "app_lt" {
   key_name      = var.key_name
 
   iam_instance_profile {
-    name = aws_iam_instance_profile.jenkins_profile.name
+    name = aws_iam_instance_profile.app_profile.name
   }
 
   network_interfaces {
     associate_public_ip_address = false
-    security_groups             = [aws_security_group.app_sg.id]
+    security_groups = [
+      aws_security_group.app_sg.id
+    ]
   }
 
   tag_specifications {
@@ -22,7 +28,11 @@ resource "aws_launch_template" "app_lt" {
       Environment = var.environment
     }
   }
-} # <-- हा closing brace missing होता
+}
+
+# ============================================================
+# Application Auto Scaling Group
+# ============================================================
 
 resource "aws_autoscaling_group" "app_asg" {
   name = "${var.project_name}-asg"

@@ -6,16 +6,6 @@ output "alb_dns_name" {
   value = aws_lb.app_alb.dns_name
 }
 
-output "jenkins_public_ip" {
-  description = "Jenkins Server Public IP"
-  value       = aws_instance.jenkins.public_ip
-}
-
-output "jenkins_public_dns" {
-  description = "Jenkins Server Public DNS"
-  value       = aws_instance.jenkins.public_dns
-}
-
 output "target_group_arn" {
   value = aws_lb_target_group.app_tg.arn
 }
@@ -32,4 +22,9 @@ output "ecr_repository_url" {
 output "ecr_repository_name" {
   description = "Amazon ECR Repository Name"
   value       = aws_ecr_repository.app_repository.name
+}
+
+output "public_subnet_1_id" {
+  description = "Public Subnet 1 ID"
+  value       = aws_subnet.public_subnet_1.id
 }

@@ -1,10 +1,10 @@
-# Get latest Amazon Linux 2023 AMI
+# ============================================================
+# Latest Amazon Linux 2023 AMI
+# ============================================================
 
 data "aws_ami" "amazon_linux" {
-
   most_recent = true
-
-  owners = ["amazon"]
+  owners      = ["amazon"]
 
   filter {
     name   = "name"
@@ -15,30 +15,27 @@ data "aws_ami" "amazon_linux" {
     name   = "virtualization-type"
     values = ["hvm"]
   }
-
 }
 
-resource "aws_instance" "jenkins" {
+# ============================================================
+# Application EC2 Instance
+# ============================================================
 
-  ami           = data.aws_ami.amazon_linux.id
-  instance_type = var.jenkins_instance_type
+resource "aws_instance" "app" {
+  iam_instance_profile = aws_iam_instance_profile.app_profile.name
+  ami                  = data.aws_ami.amazon_linux.id
+  instance_type        = var.instance_type
 
   subnet_id = aws_subnet.public_subnet_1.id
 
   vpc_security_group_ids = [
-    aws_security_group.jenkins_sg.id
+    aws_security_group.app_sg.id
   ]
-
-  iam_instance_profile = aws_iam_instance_profile.jenkins_profile.name
 
   associate_public_ip_address = true
 
   tags = {
-
-    Name = "${var.project_name}-jenkins"
-
-    Role = "Jenkins"
-
+    Name = "${var.project_name}-app"
+    Role = "Application"
   }
-
 }

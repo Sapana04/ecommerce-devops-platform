@@ -53,11 +53,6 @@ variable "instance_type" {
   type        = string
 }
 
-variable "jenkins_instance_type" {
-  description = "Jenkins EC2 Instance Type"
-  type        = string
-}
-
 variable "key_name" {
   description = "EC2 Key Pair Name"
   type        = string
